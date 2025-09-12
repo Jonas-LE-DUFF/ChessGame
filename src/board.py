@@ -11,10 +11,14 @@ class Board:
 
     def setup_board(self):
         from pieces.king import King
-        # Add other pieces similarly
         self.board[0][4] = King('black')
         self.board[7][4] = King('white')
-        # Add other pieces similarly
+
+        from pieces.rook import Rook
+        self.board[0][0] = Rook('black')
+        self.board[0][7] = Rook('black')
+        self.board[7][0] = Rook('white')
+        self.board[7][7] = Rook('white')
 
     def find_piece(self, piece):
         for r in range(8):

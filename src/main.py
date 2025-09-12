@@ -13,6 +13,9 @@ class App:
             print("No piece at the selected position.")
             print(self.board.find_piece('k'))
             return []
+        if piece.color != self.player_turn:
+            print(f"It's {self.player_turn}'s turn. Please select your own piece.")
+            return []
         return piece.get_legal_moves(position, self.board.board)
         
     def switch_turn(self):

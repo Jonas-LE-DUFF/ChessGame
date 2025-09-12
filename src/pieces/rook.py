@@ -3,7 +3,7 @@ class Rook:
         self.color = color
         self.symbol = 'R' if color == 'white' else 'r'
 
-    def get_valid_moves(self, position, board):
+    def get_legal_moves(self, position, board):
         moves = []
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # vertical and horizontal directions
         for direction in directions:
