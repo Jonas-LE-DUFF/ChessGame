@@ -70,5 +70,3 @@ class Game:
             print("White wins!")
             return 'white'
         return False
-self = App()
-self.run()
