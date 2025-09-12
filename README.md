@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# ChessGame
-Un jeu d'échec en python afin de m'entrainer dans ce langage
-=======
 # Chess Game
 
 This is a simple chess game implemented in Python. The game allows two players to play chess against each other, with a focus on implementing the core mechanics of chess.
@@ -56,4 +52,3 @@ chess-game
 ## Contributing
 
 Feel free to submit issues or pull requests if you would like to contribute to the project!
->>>>>>> c0c8170 (first commit : added board main and king class)
