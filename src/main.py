@@ -1,4 +1,5 @@
 from board import Board
+from pieces.king import King
 
 class App:
     def __init__(self):
@@ -52,12 +53,22 @@ class App:
                     self.board.board[row_move][col_move] = piece
                     self.board.board[row][col] = None
                     self.board.show()
+                    if not self.checkWinner() == False:
+                        return
+
                     step_movepiece = True
                 else:
                     print("Invalid move.")
             self.switch_turn()
 
     
-        
+    def checkWinner(self):
+        if self.board.find_piece(King('white')) is None:
+            print("Black wins!")
+            return 'black'
+        if self.board.find_piece(King('black')) is None:
+            print("White wins!")
+            return 'white'
+        return False
 self = App()
 self.run()

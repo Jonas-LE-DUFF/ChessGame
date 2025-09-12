@@ -23,6 +23,7 @@ class Board:
     def find_piece(self, piece):
         for r in range(8):
             for c in range(8):
-                if self.board[r][c] == piece:
+                pieceFound = self.board[r][c]
+                if pieceFound is not None and pieceFound.symbol == piece.symbol and pieceFound.color == piece.color:
                     return (r, c)
         return None
