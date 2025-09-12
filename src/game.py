@@ -1,6 +1,9 @@
 from board import Board
 from pieces.king import King
 
+import pygame
+from pygame.locals import *
+
 class Game:
     def __init__(self):
         self.board = Board()
@@ -25,8 +28,36 @@ class Game:
     
 
     def run(self):
+         # Initialise screen
+        pygame.init()
+        screen = pygame.display.set_mode((640, 640))
+        pygame.display.set_caption('Basic Pygame program')
+    
+        # Fill background
+        background = pygame.Surface(screen.get_size())
+        background = background.convert()
+        background.fill((250, 250, 250))
+        
+        
+
+
+
+        # Blit everything to the screen
+        screen.blit(background, (0, 0))
+        pygame.display.flip()
+    
+        # Event loop
+        self.board.showpygame(screen)
         while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return
+            pygame.display.flip()
+        
             step_selectpiece = False
+        '''
+            clicked_positions = []
+
             while not step_selectpiece:
                 user_input = input("Enter piece position (e.g., 'e2') or 'exit' to quit: ")
                 if user_input.lower() == 'exit' or user_input.lower() == 'quit':
@@ -60,8 +91,8 @@ class Game:
                 else:
                     print("Invalid move.")
             self.switch_turn()
-
-    
+        pygame.quit()
+    '''
     def checkWinner(self):
         if self.board.find_piece(King('white')) is None:
             print("Black wins!")
