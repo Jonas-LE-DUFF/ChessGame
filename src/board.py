@@ -8,10 +8,17 @@ from pieces.knight import Knight
 import pygame
 
 class Board:
+    class SelectedPiece:
+        def __init__(self, piece=None, position=None, legal_moves=[]):
+            self.piece = piece
+            self.position = position
+            self.legal_moves = legal_moves
 
     def __init__(self):
         self.board = [[None for _ in range(8)] for _ in range(8)]
         self.setup_board()
+        self.selected_piece = self.SelectedPiece()
+        
         black_queen = pygame.image.load('assets/png/black_queen.png')
         black_queen = pygame.transform.scale(black_queen, (80, 80))
         white_queen = pygame.image.load('assets/png/white_queen.png')
@@ -69,11 +76,14 @@ class Board:
                     pygame.draw.rect(screen, (186, 146, 108), (c * 80, r * 80, 80, 80))  # Draw black square
                 else:
                     pygame.draw.rect(screen, (255, 255, 255), (c * 80, r * 80, 80, 80))  # Draw white square
-
                 piece = self.board[r][c]
                 if piece is not None:
                     image = self.getImage(piece)
                     screen.blit(image, (c * 80, r * 80))
+                if(self.selected_piece.position == (r, c)):
+                    pygame.draw.rect(screen, (0, 255, 0), (c * 80, r * 80, 80, 80), 5)  # Highlight selected piece
+                if (r, c) in self.selected_piece.legal_moves:
+                    pygame.draw.rect(screen, (0, 0, 255), (c * 80 + 30, r * 80 + 30, 20, 20))  # Draw legal move indicator
         pygame.display.flip()
 
     def setup_board(self):
@@ -111,3 +121,21 @@ class Board:
                 if pieceFound is not None and pieceFound.symbol == piece.symbol and pieceFound.color == piece.color:
                     return (r, c)
         return None
+    
+    def select_piece(self, position, legal_moves=[]):
+        row, col = position
+        piece = self.board[row][col]
+        if piece is None:
+            print("No piece at the selected position.")
+            return
+        self.selected_piece = self.SelectedPiece(piece, position, legal_moves)
+        print("Piece selected:", piece.symbol)
+
+    #considering a piece is selected and can be moved to given position
+    def move_selected_piece(self, to_pos):
+        print("move_piece called with from_pos:", self.selected_piece.position, "to_pos:", to_pos)
+        self.board[to_pos[0]][to_pos[1]] = self.selected_piece.piece
+        self.board[self.selected_piece.position[0]][self.selected_piece.position[1]] = None
+        self.selected_piece = self.SelectedPiece()  # Deselect piece after moving
+
+

@@ -1,5 +1,6 @@
 from board import Board
 from pieces.king import King
+from endGame import EndGame
 
 import pygame
 from pygame.locals import *
@@ -10,12 +11,11 @@ class Game:
         self.board.show()
         self.player_turn = 'white'
 
-    def select_piece(self, position):
+    def get_legal_moves(self, position):
         row, col = position
         piece = self.board.board[row][col]
         if piece is None:
             print("No piece at the selected position.")
-            print(self.board.find_piece('k'))
             return []
         if piece.color != self.player_turn:
             print(f"It's {self.player_turn}'s turn. Please select your own piece.")
@@ -28,6 +28,8 @@ class Game:
     
 
     def run(self):
+        
+        EndGame().show_winning_screen("white")  # Temporary call to show winning screen
          # Initialise screen
         pygame.init()
         screen = pygame.display.set_mode((640, 640))
@@ -37,10 +39,6 @@ class Game:
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         background.fill((250, 250, 250))
-        
-        
-
-
 
         # Blit everything to the screen
         screen.blit(background, (0, 0))
@@ -48,51 +46,43 @@ class Game:
     
         # Event loop
         self.board.showpygame(screen)
+        moves = []
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-            pygame.display.flip()
-        
-            step_selectpiece = False
-        '''
-            clicked_positions = []
-
-            while not step_selectpiece:
-                user_input = input("Enter piece position (e.g., 'e2') or 'exit' to quit: ")
-                if user_input.lower() == 'exit' or user_input.lower() == 'quit':
-                    return
-                try:
-                    col = ord(user_input[0].lower()) - ord('a')
-                    row = 8 - int(user_input[1])
-                    print("in run ", col, ' ', row)
-                    moves = self.select_piece((row, col))
+                if event.type == MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    col = pos[0] // 80
+                    row = pos[1] // 80
+                    print(f"Mouse clicked at pixel {pos}, grid position {(row, col)}")
+                    print("piece selected: ", self.board.selected_piece.piece)
+                    if self.board.selected_piece.piece != None:
+                        if (row, col) in moves:
+                            print(f"Moving piece to {(row, col)}")
+                            self.board.move_selected_piece((row, col))
+                            winner = self.checkWinner()
+                            if winner:
+                                if not EndGame().show_winning_screen(winner):
+                                    return
+                                else:
+                                    self.board = Board()
+                                    self.player_turn = 'white'
+                            else:
+                                self.switch_turn()
+                            self.board.showpygame(screen)
+                        else:
+                            print("Invalid move. Try again.")
+                    
+                    moves = self.get_legal_moves((row, col))
                     print(f"Valid moves: {moves}")
                     if(len(moves) > 0):
-                        step_selectpiece = True
-                        
-                except (ValueError):
-                    print("Invalid input. Please enter a valid position.", ValueError.args)
+                        self.board.select_piece((row, col), moves)
+                        self.board.showpygame(screen)
 
-            step_movepiece = False
-            while not step_movepiece:
-                user_input_move = input("Enter move position (e.g., 'e4'): ")
-                col_move = ord(user_input_move[0].lower()) - ord('a')
-                row_move = 8 - int(user_input_move[1])
-                if (row_move, col_move) in moves:
-                    piece = self.board.board[row][col]
-                    self.board.board[row_move][col_move] = piece
-                    self.board.board[row][col] = None
-                    self.board.show()
-                    if not self.checkWinner() == False:
-                        return
-
-                    step_movepiece = True
-                else:
-                    print("Invalid move.")
-            self.switch_turn()
-        pygame.quit()
-    '''
+            pygame.display.flip()
+        
+            
     def checkWinner(self):
         if self.board.find_piece(King('white')) is None:
             print("Black wins!")
